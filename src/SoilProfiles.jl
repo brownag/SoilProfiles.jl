@@ -51,21 +51,7 @@ module SoilProfiles
     # validity method (all layers must have a site)
     function isValid(p::SoilProfileCollection)
         pid = pidname(p)
-        sid = p.site[!, pid]
-        lid = p.layer[!, pid]
-        for i in 1:length(lid)
-            found = false
-            for j in 1:length(sid)
-                if lid[i] == sid[j]
-                    found = true
-                    break
-                end
-            end
-            if found == false
-                return false
-            end
-        end
-        return true
+        sum(.!in.(p.layer[!, pid], Ref(p.site[!, pid]))) == 0
     end
 
     # sites without layers are possible
