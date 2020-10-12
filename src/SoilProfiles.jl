@@ -3,7 +3,7 @@ module SoilProfiles
     greet() = print("SoilProfiles v0.1.0")
 
     using DataFrames
-    import Base.show
+    import Base.show, Base.length, DataFrames.nrow
 
     # define SoilProfileCollection type
     mutable struct SoilProfileCollection
@@ -26,6 +26,10 @@ module SoilProfiles
     pidname(p::SoilProfileCollection) = p.pidname
     profile_id(p::SoilProfileCollection) = p.site[!, p.pidname]
 
+    # basic DataFrame-like methods
+    length(p::SoilProfileCollection) = DataFrame.nrow(p.site)
+    nrow(p::SoilProfileCollection) = DataFrame.nrow(p.layer)
+
     # show method
     Base.show(io::IO, p::SoilProfileCollection) =
         print(io, "Profile ID: ", p.pidname,"; # of Profiles: ", nrow(p.site),
@@ -34,11 +38,11 @@ module SoilProfiles
 
     # extraction method
     function extract(p::SoilProfileCollection, i::Any, j::Any)
-        pid = SoilProfile.pidname(p)
-        lyr = SoilProfile.layer(p)
-        sitesub = DataFrame(SoilProfile.site(p)[i, :])
+        pid = pidname(p)
+        lyr = layer(p)
+        sitesub = DataFrame(site(p)[i, :])
         jj = in.(lyr[!,pid], Ref(sitesub[!,pid]))
-        gdf = combine(groupby(lyr[jj,:], pid)) do ldf
+        gdf = combine(groupby(lyr[jj, :], pid)) do ldf
             ldf[in.(1:nrow(ldf), Ref(j)), :]
         end
         SoilProfileCollection(pid, sitesub, gdf)
@@ -46,7 +50,7 @@ module SoilProfiles
 
     # validity method (all layers must have a site)
     function isValid(p::SoilProfileCollection)
-        pid = SoilProfile.pidname(p)
+        pid = pidname(p)
         sid = p.site[!, pid]
         lid = p.layer[!, pid]
         for i in 1:length(lid)
@@ -66,9 +70,9 @@ module SoilProfiles
 
     # sites without layers are possible
     function sitesWithoutLayers(p::SoilProfileCollection)
-        pid = SoilProfile.pidname(p)
-        sit = SoilProfile.site(p)
-        ii = .!in.(sit[!,pid], Ref(SoilProfile.layer(p)[!,pid]))
+        pid = pidname(p)
+        sit = site(p)
+        ii = .!in.(sit[!,pid], Ref(layer(p)[!,pid]))
         DataFrame(sit[ii,:])[!,pid]
     end
 
@@ -87,8 +91,8 @@ module SoilProfiles
 
     end
 
-    export SoilProfileCollection, site, layer, pidname, profile_id,
-           extract, isValid
+    export SoilProfileCollection, site, layer, pidname, profile_id, length, nrow,
+           extract, isValid, sitesWithoutLayers
 
 
 end # module
