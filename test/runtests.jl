@@ -1,4 +1,4 @@
-using SoilProfiles, Test
+using DataFrames, SoilProfiles, Test
 s = DataFrame(pid = 1:6, elev = 100:105)
 l = DataFrame(pid = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3],
               top = [0,10,20,30,40,0,5,10,15,20,0,20,40,60,80],
@@ -7,7 +7,7 @@ spc = SoilProfileCollection("pid", s, l)
 
 @testset "Constructors" begin
     @test length(spc) == 6
-    @test length(SoilProfileCollection) == 0
+    @test length(SoilProfileCollection()) == 0
     show(spc)
 end
 
@@ -18,6 +18,6 @@ end
 end
 
 @testset "Integrity" begin
-    @test isValid(res) == true
-    @test sitesWithoutLayers(res) == [4,5,6]
+    @test isValid(spc) == true
+    @test sitesWithoutLayers(spc) == [4,5,6]
 end

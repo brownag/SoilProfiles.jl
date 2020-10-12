@@ -27,8 +27,8 @@ module SoilProfiles
     profile_id(p::SoilProfileCollection) = p.site[!, p.pidname]
 
     # basic DataFrame-like methods
-    length(p::SoilProfileCollection) = DataFrame.nrow(p.site)
-    nrow(p::SoilProfileCollection) = DataFrame.nrow(p.layer)
+    length(p::SoilProfileCollection) = nrow(p.site)
+    nrow(p::SoilProfileCollection) = nrow(p.layer)
 
     # show method
     Base.show(io::IO, p::SoilProfileCollection) =
