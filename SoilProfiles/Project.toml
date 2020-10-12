@@ -1,0 +1,4 @@
+name = "SoilProfiles"
+uuid = "d2d87a28-bc46-4564-bd1b-2e333645c2dc"
+authors = ["Andrew G. Brown <andrew.g.brown@usda.gov>"]
+version = "0.1.0"
