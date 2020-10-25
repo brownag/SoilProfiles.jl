@@ -1,5 +1,7 @@
 # SoilProfiles.jl
 
+[![Build Status](https://img.shields.io/travis/brownag/SoilProfiles.jl/master.svg)](https://travis-ci.org/brownag/SoilProfiles.jl)
+
 _SoilProfiles.jl_ is a [Julia](http://julialang.org) package for representing soil profile information using the "site-layer" model. Soil profiles are essentially cross sections where distinct "layers" are defined by a top and bottom depth for a point, line or area on the land surface.
 
  There is generally a many:one relationship between layers observed within a soil profile and the site-level information that identifies or summarizes that profile. The _SoilProfile_ object allows for simultaneous indexing and operations on paired or pooled site and layer data.
