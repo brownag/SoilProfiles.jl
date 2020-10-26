@@ -7,7 +7,9 @@ spc = SoilProfile("pid", s, l)
 
 @testset "Constructors" begin
     @test length(spc) == 6
-    @test length(SoilProfile()) == 0
+    @test isValid(spc) == true
+    @test isempty(SoilProfile()) == true
+    @test isValid(SoilProfile()) == true
     show(spc)
 end
 
@@ -15,9 +17,20 @@ end
     res = spc[2:6, 2:4]
     @test length(res) == 5
     @test nrow(res) == 6
+    @test nrow(site(res)) == 5
+    @test nrow(layer(res)) == 6
+    @test pidname(res) == "pid"
+    @test length(profile_id(res)) == 5
 end
 
 @testset "Integrity" begin
-    @test isValid(spc) == true
     @test sitesWithoutLayers(spc) == [4,5,6]
+end
+
+@testset "Iteration" begin
+    i = 0
+    for s in spc
+        i += 1
+    end
+    @test i == 6
 end
