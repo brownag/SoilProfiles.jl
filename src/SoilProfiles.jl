@@ -1,6 +1,6 @@
 module SoilProfiles
 
-    greet() = print("SoilProfiles v0.1.0")
+    greet() = print("SoilProfiles v0.1.1")
 
     using DataFrames
     import Base.show, Base.length, Base.size, Base.iterate,
@@ -34,9 +34,10 @@ module SoilProfiles
 
     # show method
     show(io::IO, p::SoilProfile) =
-        print(io, "Profile ID: ", p.pidname,"; # of Profiles: ", nrow(p.site),
-                  "\nSite data:\n", p.site,
-                  "\n---\nLayer data:\n", p.layer,"\n")
+        print(io, "Profile ID: ", p.pidname,
+                  "; # of Profiles: ", nrow(p.site),
+                  "\n--- Site data ---\n", p.site,
+                  "\n--- Layer data ---\n", p.layer,"\n")
 
     # extraction and iteration methods
     function getindex(p::SoilProfile, i)
