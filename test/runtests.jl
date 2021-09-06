@@ -11,6 +11,10 @@ spc = SoilProfile("pid", ["top", "bot"], s, l)
 spc2 = SoilProfile("pid", ["foo", "bar"], s, l2)
 spc3 = SoilProfile("pid", ["foo", "bar"], s3, l2)
 
+@testset "Greeting" begin
+    @test SoilProfiles.greet() == nothing
+end
+
 @testset "Constructors" begin
     @test length(spc) == 6
     @test isValid(spc) == true
@@ -22,12 +26,18 @@ spc3 = SoilProfile("pid", ["foo", "bar"], s3, l2)
 end
 
 @testset "Extraction" begin
+    @test firstindex(spc) == 1
+    @test lastindex(spc) == length(spc)
     res = spc[2:6, 2:4]
     @test length(res) == 5
+    @test firstindex(res) == 1
+    @test lastindex(res) == length(res)
     @test nrow(res) == 6
     @test nrow(site(res)) == 5
     @test nrow(layer(res)) == 6
     @test pidname(res) == "pid"
+    @test depthnames(res) == ["top", "bot"]
+    @test ncol(depths(res)) == 2
     @test length(profile_id(res)) == 5
 end
 
