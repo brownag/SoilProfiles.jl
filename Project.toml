@@ -1,7 +1,7 @@
 name = "SoilProfiles"
 uuid = "d2d87a28-bc46-4564-bd1b-2e333645c2dc"
 authors = ["Andrew G. Brown <andrew.g.brown@usda.gov>"]
-version = "0.1.1"
+version = "0.2.0"
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"

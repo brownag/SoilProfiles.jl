@@ -1,21 +1,23 @@
 module SoilProfiles
 
-    greet() = print("SoilProfiles v0.1.1")
+    greet() = print("SoilProfiles v0.2.0")
 
     using DataFrames
     import Base.show, Base.length, Base.size, Base.iterate,
            Base.getindex, Base.firstindex, Base.lastindex,
-           Base.eltype, Base.isempty, DataFrames.nrow
+           Base.eltype, Base.isempty, Base.indexin,
+           DataFrames.nrow, DataFrames.groupby, DataFrames.combine
 
     # define SoilProfile type
     mutable struct SoilProfile
         pidname::String
+        depthnames::Vector{String}
         site::DataFrame
         layer::DataFrame
     end
 
     # empty constructor
-    SoilProfile() = SoilProfile("pid",
+    SoilProfile() = SoilProfile("pid", ["top", "bot"],
                                 DataFrame(pid = Int64[]),
                                 DataFrame(pid = Int64[],
                                           top = Int64[], bot = Int64[]))
@@ -27,6 +29,10 @@ module SoilProfiles
     # profile ID name and profile ID vector accessors
     pidname(p::SoilProfile) = p.pidname
     profile_id(p::SoilProfile) = p.site[!, p.pidname]
+
+    # layer depth name accessors
+    depthnames(p::SoilProfile) = p.depthnames
+    depths(p::SoilProfile) = p.layer[!,depthnames(p)]
 
     # basic AbstractArray and DataFrame-like methods
     length(p::SoilProfile) = nrow(p.site)
@@ -45,7 +51,7 @@ module SoilProfiles
         lyr = layer(p)
         sitesub = DataFrame(site(p)[i, :])
         jj = in.(lyr[!,pid], Ref(sitesub[!,pid]))
-        SoilProfile(pid, sitesub, lyr[jj, :])
+        SoilProfile(pid, depthnames(p), sitesub, lyr[jj, :])
     end
 
     function getindex(p::SoilProfile, i, j)
@@ -56,7 +62,7 @@ module SoilProfiles
         gdf = combine(groupby(lyr[jj, :], pid)) do ldf
             ldf[in.(1:nrow(ldf), Ref(j)), :]
         end
-        SoilProfile(pid, sitesub, gdf)
+        SoilProfile(pid, depthnames(p), sitesub, gdf)
     end
 
     firstindex(p::SoilProfile) = 1
@@ -83,23 +89,27 @@ module SoilProfiles
         DataFrame(sit[ii,:])[!, pid]
     end
 
-    # integrity method (site order matches horizon order)
+    # integrity method (site order matches layer order (for sites with layers))
     function checkIntegrity(p::SoilProfile)
-
+        lspc = unique(layer(p)[:, pidname(p)])
+        sspc = unique(site(p)[:, pidname(p)])
+        indexin(lspc, sspc) == 1:length(lspc)
     end
 
     # topology method (no overlaps or gaps when top-depth sorted)
     function checkTopology(p::SoilProfile)
-
+        combine(groupby(layer(p), pidname(p)), depthnames(p) => ((top, bottom) -> (bottom[1:(length(bottom) - 1)] == top[2:(length(top))])) => "check")
     end
 
-    # re-order sites (force horizon order to match [new] site order)
-    function reorderSites(p::SoilProfile)
-
+    # re-order sites (force layer order to match [new] site order)
+    function reorder(p::SoilProfile)
+        p.site = sort!(p.site, order(pidname(p)))
+        p.layer = sort!(p.layer, [order(pidname(p)), order(depthnames(p)[1])])
+        p
     end
 
     export SoilProfile, site, layer, pidname, profile_id,
-           length, nrow, getindex, isValid, sitesWithoutLayers
-
+           length, nrow, getindex, isValid, sitesWithoutLayers,
+           depths, depthnames, checkIntegrity, checkTopology, reorder
 
 end # module
