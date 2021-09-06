@@ -9,7 +9,7 @@ _SoilProfiles.jl_ is a [Julia](http://julialang.org) package for representing so
 
 The _SoilProfile_ object in _SoilProfiles.jl_ conceptually mirrors the _SoilProfileCollection_ object defined by the [aqp](http://github.com/ncss-tech/aqp) **R** package. In Julia, we are using the _DataFrames.jl_ package instead of **R** _data.frame_ objects.
 
-```
+```julia
 using SoilProfiles
 using DataFrames
 
@@ -19,8 +19,13 @@ l = DataFrame(pid = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3],
               top = [0,10,20,30,40,0,5,10,15,20,0,20,40,60,80],
               bot = [10,20,30,40,50,5,10,15,20,25,20,40,60,80,100])
 
-# construct a SoilProfile from DataFrames
-spc = SoilProfile("pid", s, l)
+# Construct a SoilProfile from DataFrames
+#  Must specify: 
+#  - unique profile ID
+#  - top and bottom depth column names in layer DataFrame
+#  - site DataFrame and layer DataFrame
+
+spc = SoilProfile("pid", ["top", "bot"], s, l)
 show(spc)
 
 # empty SPC
@@ -30,11 +35,20 @@ show(SoilProfile())
 res = spc[2:6, 2:4]
 show(res)
 
+# view the layer depths
+depths(res)
+
 # all layers have a site
 println(isValid(res))
 
 # but not all sites have layers [4,5,6]
 println(sitesWithoutLayers(res))
+
+# check that site and layer order are in sync
+checkIntegrity(res)
+
+# check that layers in top depth order have bottom depths matching adjacent top depths
+checkTopology(res)
 
 show(spc[1,1])
 
