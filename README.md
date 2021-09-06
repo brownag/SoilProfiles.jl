@@ -28,7 +28,7 @@ l = DataFrame(pid = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3],
 spc = SoilProfile("pid", ["top", "bot"], s, l)
 show(spc)
 
-# empty SPC
+# empty SoilProfile
 show(SoilProfile())
 
 # site and layer extraction
