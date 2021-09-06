@@ -1,6 +1,6 @@
 # SoilProfiles.jl
 
-[![Build Status](https://img.shields.io/travis/brownag/SoilProfiles.jl/main.svg)](https://travis-ci.org/brownag/SoilProfiles.jl)
+[![tests](https://github.com/brownag/SoilProfiles.jl/actions/workflows/test.yml/badge.svg)](https://github.com/brownag/SoilProfiles.jl/actions/workflows/test.yml)
 [![codecov](https://codecov.io/github/brownag/SoilProfiles.jl/branch/main/graphs/badge.svg)](https://codecov.io/github/brownag/SoilProfiles.jl)
 
 _SoilProfiles.jl_ is a [Julia](http://julialang.org) package for representing soil profile information using the "site-layer" model. Soil profiles are essentially cross sections where distinct "layers" are defined by a top and bottom depth for a point, line or area on the land surface.
