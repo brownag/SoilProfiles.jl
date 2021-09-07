@@ -20,13 +20,20 @@ l = DataFrame(pid = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3],
               bot = [10,20,30,40,50,5,10,15,20,25,20,40,60,80,100])
 
 # Construct a SoilProfile from DataFrames
-#  Must specify: 
+#  Must specify:
 #  - unique profile ID
 #  - top and bottom depth column names in layer DataFrame
 #  - site DataFrame and layer DataFrame
 
-spc = SoilProfile("pid", ["top", "bot"], s, l)
-show(spc)
+sp1 = SoilProfile("pid", ["top", "bot"], s, l)
+
+# equivalent syntax
+# when ID specified as argument
+sp2 = SoilProfile("pid", s, l)
+# or when ID as first column in site data
+sp3 = SoilProfile(s, l)
+
+show(sp1)
 
 # empty SoilProfile
 show(SoilProfile())
@@ -53,10 +60,10 @@ checkTopology(res)
 show(spc[1,1])
 
 # iterate using for i in SoilProfile
-for i in spc
+for i in sp1
  show(i)
 end
 
 # or use foreach(::Function, ::SoilProfile)
-foreach(show, spc)
+foreach(show, sp1)
 ```
