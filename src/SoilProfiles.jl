@@ -1,6 +1,6 @@
 module SoilProfiles
 
-    greet() = print("SoilProfiles v0.2.0")
+    greet() = print("SoilProfiles v0.2.1\n")
 
     using DataFrames
     import Base.show, Base.length, Base.size, Base.iterate,
@@ -22,6 +22,18 @@ module SoilProfiles
                                 DataFrame(pid = Int64[],
                                           top = Int64[], bot = Int64[]))
 
+    # 0.1.x: backward compatibility: first two non-ID columns in layers become top/bottom
+    SoilProfile(pid::String,
+                sites::DataFrame,
+                layers::DataFrame) = SoilProfile(pid,
+                                                 names(layers)[findall(names(layers) .!= pid)],
+                                                 sites, layers)
+
+    # 0.2.1+: even simpler: site id first in first column, first two non-ID columns in layers become top/bottom
+    SoilProfile(sites::DataFrame,
+                layers::DataFrame) =  SoilProfile(names(sites)[1],
+                                                  names(layers)[findall(names(layers) .!= names(sites)[1])],
+                                                  sites, layers)
     # site and layer accessor methods
     site(p::SoilProfile) = p.site
     layer(p::SoilProfile) = p.layer

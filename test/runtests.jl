@@ -22,6 +22,18 @@ end
     @test isValid(spc3) == true
     @test isempty(SoilProfile()) == true
     @test isValid(SoilProfile()) == true
+
+    # valid ways of constructing from data frames where:
+    # - first column in site data contains site id (or pid specified)
+    # - first two non-ID columns in layers contain top and bottom depth
+    s = DataFrame(pid = 1:3, elev = 100:102)
+    l = DataFrame(pid = [1,1,1,1,1,2,2,2,2,2,3,3,3,3,3],
+                  top = [0,10,20,30,40,0,5,10,15,20,0,20,40,60,80],
+                  bot = [10,20,30,40,50,5,10,15,20,25,20,40,60,80,100])
+    @test isValid(SoilProfile("pid", ["top", "bot"], s, l))
+    @test isValid(SoilProfile("pid", s, l))
+    @test isValid(SoilProfile(s, l))
+
     show(spc)
 end
 
